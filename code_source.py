@@ -57,20 +57,32 @@ def construir_matriz_num((la, lb, lc)):
 	nuevas_listas = (la[3:], lb[3:], lc[3:])	
 	return matriz_num, nuevas_listas
 
+DIGIT_ILL = -1
+
+
 def parseMatriz(m):
 	for n, value in t.iteritems():
 		if m == value:
 			return n
+	return DIGIT_ILL
+
+ERR_OK = "OK"
+ERR_ILL = "ILL"
 
 def parseCuenta(lineas):
 	matrices = list()
 	cuenta = list()
+	error = ERR_OK
 	while len(lineas[0]) > 0:
 		matriz_num, lineas = construir_matriz_num(lineas)
 		matrices.append(matriz_num)
 	for m in matrices:
-		cuenta.append(parseMatriz(m))
-	return cuenta	    
+		n = parseMatriz(m)
+		if n in (DIGIT_ILL,):
+			error = ERR_ILL
+		cuenta.append(n)
+	
+	return cuenta, error
 
 def checksum_cuenta(digitos):
 	return sum([(i+1) * n \
@@ -84,6 +96,13 @@ def get_lineas(filename):
 		lineaB = resource.readline()[:-1]
 		lineaC = resource.readline()[:-1]
 	return (lineaA, lineaB, lineaC)
+
+def formatear_cuenta(digitos, error):
+	sd = "".join([str(d) if d != DIGIT_ILL else '?'\
+				 for d in digitos])	
+	if error != ERR_OK:
+		return "%s %s" % (sd, error)
+	return "%s" % (sd, )
 
 
 if __name__ == '__main__':
