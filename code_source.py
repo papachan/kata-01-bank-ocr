@@ -1,44 +1,46 @@
-t = {"uno": (
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+t = {1: (
 	(" ", " ", " "),
 	(" ", " ", "|"),
 	(" ", " ", "|")),
-	 "dos": (
+	 2: (
 	(" ", "_", " "),
 	(" ", "_", "|"),
 	("|", "_", " ")),
-	"tres": (
+	 3: (
 	(" ", "_", " "),
 	(" ", "_", "|"),
 	(" ", "_", "|")),
-	"cuatro": (
+	 4: (
 	(" ", " ", " "),
 	("|", "_", "|"),
 	(" ", " ", "|")),
-	"cinco": (
+	 5: (
 	(" ", "_", " "),
 	("|", "_", " "),
 	(" ", "_", "|")),
-	"seis": (
+	 6: (
 	(" ", "_", " "),
 	("|", "_", " "),
 	("|", "_", "|")),
-	"siete": (
+	 7: (
 	(" ", "_", " "),
 	(" ", " ", "|"),
 	(" ", " ", "|")),
-	"ocho": (
+	 8: (
 	(" ", "_", " "),
 	("|", "_", "|"),
 	("|", "_", "|")),
-	"nueve": (
+	 9: (
 	(" ", "_", " "),
 	("|", "_", "|"),
 	(" ", "_", "|")),
-	"cero": (
+	 0: (
 	(" ", "_", " "),
 	("|", " ", "|"),
 	("|", "_", "|"))}
-
 
 def print_mat(m):
 	print "%s%s%s"%(m[0])
@@ -50,34 +52,39 @@ def print_t():
 		print k
 		print_mat(l)
 
-
-resource = open('resources.txt', 'r')
-
-
 def construir_matriz_num((la, lb, lc)):
 	matriz_num = tuple(la[0:3]),tuple(lb[0:3]),tuple(lc[0:3])
-	nuevas_listas = (la[3:], lb[3:], lc[3:])
-	print matriz_num	
+	nuevas_listas = (la[3:], lb[3:], lc[3:])	
 	return matriz_num, nuevas_listas
 
+def parseMatriz(m):
+	for n, value in t.iteritems():
+		if m == value:
+			return n
+
+def parseCuenta(lineas):
+	matrices = list()
+	cuenta = list()
+	while len(lineas[0]) > 0:
+		matriz_num, lineas = construir_matriz_num(lineas)
+		matrices.append(matriz_num)
+	for m in matrices:
+		cuenta.append(parseMatriz(m))
+	return cuenta	    
+
+def checksum_cuenta(digitos):
+	return sum([(i+1) * n \
+		        for i, n in enumerate(reversed(digitos))]) \
+	          % 11 == 0
 
 
-lineaA = resource.readline()[:-1]
-lineaB = resource.readline()[:-1]
-lineaC = resource.readline()[:-1]
+def get_lineas(filename):
+	with open(filename, 'r') as resource:
+		lineaA = resource.readline()[:-1]
+		lineaB = resource.readline()[:-1]
+		lineaC = resource.readline()[:-1]
+	return (lineaA, lineaB, lineaC)
 
-print len(lineaA)
-print len(lineaB)
-print len(lineaC)
 
-lineas = (lineaA, lineaB, lineaC)
-matrices = list()
-while len(lineas[0]) > 0:
-	matriz_num, lineas = construir_matriz_num(lineas)
-	matrices.append(matriz_num)
-
-for m in matrices:
-	print_mat(m)
-
-print lineaA, lineaB, lineaC
-
+if __name__ == '__main__':
+	print parseCuenta(get_lineas('resources.txt'))
