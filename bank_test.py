@@ -39,5 +39,13 @@ class KataBankTest(unittest.TestCase):
 		s = formatear_cuenta(digitos, error)
 		self.assertEqual("000000051", s)
 
+	def test_report_account_parse_err(self):
+		lineas = get_lineas('test-data/case3/000000052-ERR')
+		digitos, error = parseCuenta(lineas)
+		s = formatear_cuenta(digitos, error)
+		self.assertEqual("000000052 ERR", s)
+
+
+
 if __name__ == '__main__':
     unittest.main()

@@ -68,6 +68,7 @@ def parseMatriz(m):
 
 ERR_OK = "OK"
 ERR_ILL = "ILL"
+ERR_ERR = "ERR"
 
 def parseCuenta(lineas):
 	matrices = list()
@@ -82,7 +83,14 @@ def parseCuenta(lineas):
 			error = ERR_ILL
 		cuenta.append(n)
 	
+	if error == ERR_ILL:
+		return cuenta, error
+
+	if not checksum_cuenta(cuenta):
+		error = ERR_ERR
+
 	return cuenta, error
+
 
 def checksum_cuenta(digitos):
 	return sum([(i+1) * n \
