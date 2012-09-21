@@ -94,7 +94,7 @@ def parseCuenta(lineas):
 			else:
 				opciones_digitos.append([digit] + fixDigit(m))
 		valid_checksums = []
-		for cuenta_opcional in product(opciones_digitos):
+		for cuenta_opcional in product(*opciones_digitos):
 			print "cuenta:", cuenta_opcional
 			if checksum_cuenta(cuenta_opcional):
 				valid_checksums.append(cuenta_opcional)
