@@ -1,5 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+from itertools import product
+from copy import deepcopy
 
 t = {1: (
 	(" ", " ", " "),
@@ -79,18 +81,75 @@ def parseCuenta(lineas):
 		matrices.append(matriz_num)
 	for m in matrices:
 		n = parseMatriz(m)
-		if n in (DIGIT_ILL,):
+		if n in (DIGIT_ILL,):				
 			error = ERR_ILL
 		cuenta.append(n)
 	
 	if error == ERR_ILL:
+		opciones_digitos = list()
+		for digit, m in zip(cuenta, matrices):
+			
+			if digit == DIGIT_ILL:
+				opciones_digitos.append(fixDigit(m))
+			else:
+				opciones_digitos.append([digit] + fixDigit(m))
+		valid_checksums = []
+		for cuenta_opcional in product(opciones_digitos):
+			print "cuenta:", cuenta_opcional
+			if checksum_cuenta(cuenta_opcional):
+				valid_checksums.append(cuenta_opcional)
+		print valid_checksums
+
+	if error == ERR_ILL:
 		return cuenta, error
+
 
 	if not checksum_cuenta(cuenta):
 		error = ERR_ERR
 
 	return cuenta, error
 
+def tupla_lista(m):
+	a = list()
+	for i in m:
+		a.append(list(i))
+	return a
+
+def lista_tupla(m):
+	a = list()
+	for i in m:
+		a.append(tuple(i))
+	return tuple(a)
+
+def fixDigit(m):
+	response = []
+
+	#underscores
+	for i in range(3):		
+		mm = tupla_lista(m)
+		if m[i][1] == '_':
+			mm[i][1] = ' '
+		else:
+			mm[i][1] = '_'
+
+		n = parseMatriz(lista_tupla(mm))
+		if n not in (DIGIT_ILL,):
+			response.append(n)
+
+	#pipes
+	for i in [0,1]:
+		for j in [0,2]:
+			mm = tupla_lista(m)
+			if m[i][j] == '|':
+				mm[i][j] = ' '
+			else:
+				mm[i][j] = '|'
+
+			n = parseMatriz(lista_tupla(mm))
+			if n not in (DIGIT_ILL,):
+				response.append(n)
+
+	return response	
 
 def checksum_cuenta(digitos):
 	return sum([(i+1) * n \
@@ -114,4 +173,18 @@ def formatear_cuenta(digitos, error):
 
 
 if __name__ == '__main__':
-	print parseCuenta(get_lineas('resources.txt'))
+	cuenta, error = parseCuenta(get_lineas('test-data/case1/123456789'))
+
+
+
+
+
+
+
+
+
+
+
+
+
+

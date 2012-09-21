@@ -4,7 +4,7 @@
 import unittest
 
 from code_source import get_lineas, parseCuenta, \
-	checksum_cuenta, ERR_ILL, formatear_cuenta
+	checksum_cuenta, ERR_ILL, formatear_cuenta, fixDigit
 
 class KataBankTest(unittest.TestCase):
 	"""docstring for Kata"""
@@ -44,6 +44,33 @@ class KataBankTest(unittest.TestCase):
 		digitos, error = parseCuenta(lineas)
 		s = formatear_cuenta(digitos, error)
 		self.assertEqual("000000052 ERR", s)
+
+	def test_fix_digit1(self):
+		m = (
+			(" ", " ", " "),
+			(" ", " ", " "),
+			(" ", " ", "|"))
+		lista_numeros = fixDigit(m)
+		self.assertEqual(lista_numeros, [1])
+
+	def test_fix_digit2(self):
+		m = (
+			(" ", "_", " "),
+			("|", "_", "|"),
+			("|", "_", "|"))
+		lista_numeros = fixDigit(m)
+		self.assertEqual(lista_numeros, [0,6])
+
+	def test_correction1(self):
+		lineas = get_lineas('test-data/case4/000000051')
+		digitos, error = parseCuenta(lineas)
+		s = formatear_cuenta(digitos, error)
+		self.assertEqual("000000051", s)
+
+
+
+
+
 
 
 
